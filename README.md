@@ -4,9 +4,15 @@
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
 A: 
-First of all, I traversed each box and its peers unit to find if there are any other boxes in the same unit with the same value. If so, traversed peers other than this pair of boxes and find if values of their peers in the same unit included the values of the box pair. Then eliminated values of the box pair from other peers if they have any of them. 
+Constraints of the naked twims problem contain that the length of values for the twins should be 2, and that the twins should be in same units, either two or one, and that peers in the same units should not contain any of values the twins have finally. 
+
+The general idea of implementation is that, first of all, I traversed each box and its peers unit to find if there are any other boxes in the same unit with the same value. A list is generated to save these pairs. The next step is to eliminate. Traversed peers other than this pair of boxes and find if values of their peers in the same unit included the values of the box pair. If so, eliminate these numbers from other peers if they have any of them. 
 
 Typically, a pair of boxes with the same value is in one or two different units. For the occasion of one unit, they might be in the same row or column or diagonal unit. For the occasion of two units, they might be in the same row or diagonal or column unit plus square unit. The function goes through each box in the same unit as the box pair is in. 
+
+Detailedly, we see A1, the top left cell firstly. The length of its value is not 2. Then move rightward, A2. Assume it is the cell with 2 digit value, 23. Then we see its column, row and square peers, respevtively. Let us say we find a peer box, B3, with exactly the same value in the same square unit. Save the location of two boxes and the index of the square unit they are in. Then move forward until we finished traversal of all boxes. At this time, we might have a list of pairs and unit index. Then we process each element in the list. For example, A2 and B3. We extract 7 peers other than A2 and B3 in the same square unit, and find if each peer have any of values, 2 or 3. If so, 2 or 3 should be removed from their values. Then move forward to the next pair until we finish all of them. 
+
+When I added the naked twins function into the entire procedure, it ran much faster than before, saving 90% time in this case. The basic idea of the time reduction is that the time spent on depth first search grows exponentially as the number of undetermined boxes  and the length of values of undetermined boxes grow. So if we could reduce the length of values and the number of undetermined boxes as many as possible, we could save much time in the process of depth first search. 
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
