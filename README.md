@@ -16,9 +16,14 @@ When I added the naked twins function into the entire procedure, it ran much fas
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: Compared to traditional sudoku problem without diagonal condition, I only add diagonal unit into the unit list.
+A: 
+The constraints of diagonal sudoku problem contain that 9 elements on the diagonal line should all be different. 
 
-It firstly replaces blank with string "123456789" and converts it into a dictionary with grid_value function. Then it eliminates those values which have already been determined for undetermined boxes with eliminate function. Then it continue to go through each box, determining boxes which have only one choice with one_choice function. Boxes undetermined are compared to their peers in the row, column, square and diagonal if there is any, respectively, to decide if they qualify the one choice requirements. Lastly, a box with the smallest string is picked and its values are tried through depth first search with search function. 
+Compared to traditional sudoku problem without diagonal condition, I only add diagonal unit into the unit list. In this case, number of units increases by two, and elements on the two diagonal lines have more peers than others. They each belongs to four units, row, column, square and diagonal. 
+
+It firstly replaces blank with string "123456789" and converts it into a dictionary with grid_value function. Then it eliminates those values which have already been determined for undetermined boxes with eliminate function. Then it continue to go through each box, determining boxes which have only one choice with one_choice function. Boxes undetermined are compared to their peers in the row, column, square and diagonal if there is any, respectively, to decide if they qualify the one choice requirements. Then naked twins function is used and further reduce the puzzle. Lastly, a box with the smallest string is picked and its values are tried through depth first search with search function. 
+
+Detailedly, we went through from A1 to I9. Assume grid_value has been done. 
 
 
 ### Install
