@@ -1,24 +1,6 @@
+from utils import *
+
 assignments = []
-rows = 'ABCDEFGHI'
-cols = '123456789'
-
-def cross(A, B):
-    "Cross product of elements in A and elements in B."
-    return [i+j for i in A for j in B]
-
-boxes = cross(rows, cols)
-
-row_units = [cross(r, cols) for r in rows]
-column_units = [cross(rows, c) for c in cols]
-square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-#diagonal units added here
-diagonal_units1 = [rows[i]+cols[i] for i in range(9)]
-diagonal_units2 = [rows[i]+cols[8-i] for i in range(9)]
-diagonal_units = [diagonal_units1, diagonal_units2]
-unitlist = row_units + column_units + square_units + diagonal_units
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
-
 
 def assign_value(values, box, value):
     """
@@ -40,18 +22,35 @@ def naked_twins(values):
     """
 
     # Find all instances of naked twins
-    for box in boxes: #traverse each box
-        if len(values[box]) == 2: #only focus on those boxes with 2 digit
-            for unit in unitlist:
-                if box in unit: #see peers of the current box traversed
+    naked_pair = []
+    for box in boxes:
+        if len(values[box]) == 2:
+            for i, unit in enumerate(unitlist): #record the index of unit
+                if box in unit:
                     for item in unit:
-                        if values[box] == values[item] and box != item: #compare peers to the current box
-                            for box2 in unit: #if the pair with same value has been found, traverse peers again
-                                if box2 != box and box2!= item:
-                                    for char in values[box]: # Eliminate the naked twins as possibilities for their peers
-                                        if char in values[box2]:
-                                            values[box2] = values[box2].replace(char, "")
-
+                        if values[box] == values[item] and box != item: #find the pair
+                            a = (box,item, i)
+                            naked_pair.append(a) #record the pair and their unit
+    # Eliminate the naked twins as possibilities for their peers
+    for u, v, num in naked_pair:
+        for char in values[u]:
+            for item in unitlist[num]:
+                if item != u and item != v: # peers should not be the pair itself
+                    values[item] = values[item].replace(char, "")
+        
+    
+    #for box in boxes: #traverse each box
+        #if len(values[box]) == 2: #only focus on those boxes with 2 digit
+            #for unit in unitlist:
+                #if box in unit: #see peers of the current box traversed
+                    #for item in unit:
+                        #if values[box] == values[item] and box != item: #compare peers to the current box
+                            #for box2 in unit: #if the pair with same value has been found, traverse peers again
+                                #if box2 != box and box2!= item:
+                                    #for char in values[box]: # Eliminate the naked twins as possibilities for their peers
+                                        #if char in values[box2]:
+                                            #values[box2] = values[box2].replace(char, "")
+    
     return values
                 
                 
@@ -141,7 +140,7 @@ def reduce_puzzle(values):
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
         values = eliminate(values)
         values = only_choice(values)
-
+        values = naked_twins(values)
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
