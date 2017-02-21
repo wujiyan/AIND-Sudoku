@@ -1,5 +1,8 @@
 from utils import *
+import logging
 
+logging.basicConfig(filename = 'logger.log', level = logging.ERROR)
+logging.error('error message')
 assignments = []
 
 def assign_value(values, box, value):
