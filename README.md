@@ -4,26 +4,11 @@
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
 A: 
-Constraints of the naked twims problem contain that the length of values for the twins should be 2, and that the twins should be in same units, either two or one, and that peers in the same units should not contain any of values the twins have finally. 
-
-The general idea of implementation is that, first of all, I traversed each box and its peers unit to find if there are any other boxes in the same unit with the same value. A list is generated to save these pairs. The next step is to eliminate. Traversed peers other than this pair of boxes and find if values of their peers in the same unit included the values of the box pair. If so, eliminate these numbers from other peers if they have any of them. 
-
-Typically, a pair of boxes with the same value is in one or two different units. For the occasion of one unit, they might be in the same row or column or diagonal unit. For the occasion of two units, they might be in the same row or diagonal or column unit plus square unit. The function goes through each box in the same unit as the box pair is in. 
-
-Detailedly, we see A1, the top left cell firstly. The length of its value is not 2. Then move rightward, A2. Assume it is the cell with 2 digit value, 23. Then we see its column, row and square peers, respevtively. Let us say we find a peer box, B3, with exactly the same value in the same square unit. Save the location of two boxes and the index of the square unit they are in. Then move forward until we finished traversal of all boxes. At this time, we might have a list of pairs and unit index. Then we process each element in the list. For example, A2 and B3. We extract 7 peers other than A2 and B3 in the same square unit, and find if each peer have any of values, 2 or 3. If so, 2 or 3 should be removed from their values. Then move forward to the next pair until we finish all of them. 
-
-When I added the naked twins function into the entire procedure, it ran much faster than before, saving 90% time in this case. The basic idea of the time reduction is that the time spent on depth first search grows exponentially as the number of undetermined boxes  and the length of values of undetermined boxes grow. So if we could reduce the length of values and the number of undetermined boxes as many as possible, we could save much time in the process of depth first search. 
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
 A: 
-The constraints of diagonal sudoku problem contain that 9 elements on the diagonal line should all be different. 
 
-Compared to traditional sudoku problem without diagonal condition, I only add diagonal unit into the unit list. In this case, number of units increases by two, and elements on the two diagonal lines have more peers than others. They each belongs to four units, row, column, square and diagonal. 
-
-It firstly replaces blank with string "123456789" and converts it into a dictionary with grid_value function. Then it eliminates those values which have already been determined for undetermined boxes with eliminate function. Then it continue to go through each box, determining boxes which have only one choice with one_choice function. Boxes undetermined are compared to their peers in the row, column, square and diagonal if there is any, respectively, to decide if they qualify the one choice requirements. Then naked twins function is used and further reduce the puzzle. Lastly, a box with the smallest string is picked and its values are tried through depth first search with search function. 
-
-Detailedly, we went through from A1 to I9. Assume grid_value has been done and blank boxes have been filled with "123456789". If value of the current box is "123456789", we check its peers in row, column, square, and possibly diagonal unit with only 1 digit value. In other words, they are determined boxes. Once we find determined boxes in units it belongs to, we delete the determined values from it and then move forward to the next box. Then we use the one choice solution, going through all boxes again. Suppose we check A1 firstly, and the value of it is "237". We loop through the 3 values, for instance, 2 at current time. Every peers of A1, which are in row, column , diagonal and square units, will be check to see if there are any 2 in it. If there is no more 2 in its peers, simply let A1 equals to 2 since 2 is the only one choice. We do the same thing for other boxes. Next we use naked twins solution. All pairs in the same unit with the same value will be checked, and values of the pairs will be deleted from other peers. This process has been described in detail in the previous question. Lastly, we do depth first search, trying determining remaining boxes. We start from boxes with the minimum possible values, assumably, H8 with "34" in it. We let H8 equals to 3, and repeat all I have saied before, from eliminate, one choice to naked twins, until we find the solution. If it is still false, we let H8 equals to 4 and repeat the same process. At the search step, all possible combinations of remaning unsolved boxes are listed with the same solution we used before until we found the correct one. 
 
 ### Install
 
